@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./src/config/database');
-const logger = require('./src/config/logger')
-const cryptoRoutes = require('./src/routes/cryptoRoutes')
-
+const logger = require('./src/config/logger');
+const cryptoRoutes = require('./src/routes/cryptoRoutes');
+const priceUpdateJob = require('./src/utils/jobs/priceUpdateJob');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -13,6 +13,8 @@ connectDB();
 app.use(express.json());
 
 app.use('/api',cryptoRoutes)
+
+priceUpdateJob.startJob();
 
 app.use((err, req,res,next) => {
     logger.error(err.stack);
